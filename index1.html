@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="src/leaflet.css">
+    <script src="src/leaflet.js"></script>
+    <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"></script>
+    <style>
+        html { height: 100%; }
+        body { padding: 0; margin: 0; height: 100%; }
+        #container { width: 100%; height: 100%; }
+        .map { width: 100%; height: 100%; }
+    </style>
+    <title>Provinsi NTB</title>
+</head>
+<body>
+    <div id="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">
+                <img src="img/logo.png" width="30" height="30" alt=""> Provinsi NTB
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="map" class="map"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    
+    <!-- Pastikan file GeoJSON ada di jalur yang benar -->
+    <script src="geojeson/kotamataram.js"></script>
+    <script src="geojeson/mataram.js" type="text/javascript"></script>
+    <script src="geojeson/ampenan.js" type="text/javascript"></script>
+    <script src="geojeson/sekarbela.js" type="text/javascript"></script>
+    <script src="geojeson/sandubaya.js" type="text/javascript"></script>
+    <script src="geojeson/selaparang.js" type="text/javascript"></script>
+    <script src="geojeson/cakranegara.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        // Inisialisasi peta
+        var mymap = L.map('map').setView([-8.656125, 116.2855828], 13);
+
+        // Layer dasar OpenStreetMap
+        var streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(mymap);
+
+        // Layer satelit
+        var satelit = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 18,
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        // Menambahkan batas wilayah menggunakan GeoJSON
+        var boundaries = L.geoJSON([kotamataram, mataram, ampenan, sekarbela, sandubaya, selaparang, cakranegara], {
+            style: function (feature) {
+                return {
+                    color: "#ff7800",
+                    weight: 2,
+                    opacity: 1
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties.name || "Kecamatan");
+            }
+        }).addTo(mymap);
+
+        // Menambahkan marker untuk lokasi tertentu
+        var marker1 = L.marker([-8.5945524, 116.1052177]).addTo(mymap)
+            .bindPopup("<b>Ini adalah Titik</b><br />Kota Mataram").openPopup();
+
+        // Menambahkan beberapa marker untuk tempat ibadah
+        var IbadahIcon = L.icon({
+            iconUrl: 'icon/Ibadah.png',
+            iconSize: [32, 37]
+        });
+
+        var ib1 = L.marker([-8.5735451,116.0750829], { icon: IbadahIcon }).bindPopup("masjid nurul huda <img src='img/masjid nuru huda .jpg' alt='masjid nurul huda' width='300px'/>");
+        var ib2 = L.marker([-8.587598,116.082495], { icon: IbadahIcon }).bindPopup("Masjid Khairul Huda <img src='img/Masjid Khairul Huda.jpg' alt='Masjid Khairul Huda' width='300px'/>");
+        var ib3 = L.marker([-8.5718152,116.0751529], {icon: IbadahIcon}).bindPopup("masjid jami babussalam <img src='img/masjid jami babussalam.jpg' alt='masjid jami babussalam' width='300px'/>");
+        var ib4 = L.marker([-8.5840283,116.0940217], {icon: IbadahIcon}).bindPopup("Masjid Aisyah Lawata <img src='img/Masjid Aisyah Lawata.jpg' alt='Masjid Aisyah Lawata' width='300px'/>");
+	    var	ib5 = L.marker([-8.5782275,116.0843974], {icon: IbadahIcon}).bindPopup("Masjid Baitussalam <img src='img/Masjid Baitussalam.jpg' alt='Masjid Baitussalam' width='300px'/>");
+        var	ib6 = L.marker([-8.6050455,116.1282067], {icon: IbadahIcon}).bindPopup("MASJID JAMI' AL-IMAN <img src='img/MASJID JAMI' AL-IMAN.jpg' alt='MASJID JAMI' AL-IMAN' width='300px'/>");
+	    var	ib7= L.marker([-8.5981805,116.1356764], {icon: IbadahIcon}).bindPopup("Masjid Baiturrahim Getap <img src='img/Masjid Baiturrahim Getap.jpg' alt='Masjid Baiturrahim Getap' width='300px'/>");
+        var	ib8 = L.marker([-8.5853263,116.1294002], {icon: IbadahIcon}).bindPopup("Masjid Agung Al Muttaqin <img src='img/Masjid Agung Al Muttaqin.jpg' alt='Masjid Agung Al Muttaqin' width='300px'/>");
+	    var ib9 = L.marker([-8.5879717,116.1308203], {icon: IbadahIcon}).bindPopup("Masjid Nurul Falah <img src='img/Masjid Nurul Falah.jpg' alt='Masjid Nurul Falah' width='300px'/>");
+	    var ib10 = L.marker([-8.5990032,116.0971577], {icon: IbadahIcon}).bindPopup("Masjid Al-Mustofa <img src='img/Masjid Al-Mustofa.jpg' alt='Masjid Al-Mustofa' width='300px'/>");
+        var ib11 = L.marker([-8.5989257,116.094044], {icon: IbadahIcon}).bindPopup("Masjid AR-RA'ISIYAH Sekarbela <img src='img/Masjid AR-RA'ISIYAH Sekarbela.jpg' alt='Masjid AR-RA'ISIYAH Sekarbela' width='300px'/>");
+	    var	ib12 = L.marker([-8.6048153,116.0846933], {icon: IbadahIcon}).bindPopup("Masjid Darul Arqom <img src='img/Masjid Darul Arqom.jpg' alt='Masjid Darul Arqom' width='300px'/>");
+        var	ib13 = L.marker([-8.5828502,116.1008378], {icon: IbadahIcon}).bindPopup("Masjid Raudatussa'adah <img src='img/Masjid Raudatussa'adah.jpg' alt='Masjid Raudatussa'adah' width='300px'/>");
+	    var	ib14 = L.marker([-8.5813158,116.0989079], {icon: IbadahIcon}).bindPopup("Masjid Raya Attaqwa <img src='img/Masjid Raya Attaqwa.jpg' alt='Masjid Raya Attaqwa' width='300px'/>");
+        var	ib15 = L.marker([-8.5898756,116.1505718], {icon: IbadahIcon}).bindPopup("MASJID NURUL HIDAYAH <img src='img/MASJID NURUL HIDAYAH.jpg' alt='MASJID NURUL HIDAYAH' width='300px'/>");
+	    var ib16 = L.marker([-8.5917709,116.1494768], {icon: IbadahIcon}).bindPopup("Masjid Besar Ar Rahmah <img src='img/Masjid Besar Ar Rahmah.jpg' alt='Masjid Besar Ar Rahmah' width='300px'/>");
+	    var ib17 = L.marker([-8.5938916,116.144627], {icon: IbadahIcon}).bindPopup("Masjid Haqqul Yaqin Gerung Butun Barat Sandubaya MATARAM <img src='img/Masjid Haqqul Yaqin Gerung Butun Barat Sandubaya MATARAM.jpg' alt='Masjid Haqqul Yaqin Gerung Butun Barat Sandubaya MATARAM' width='300px'/>");
+        var	ib18 = L.marker([-8.5981444,116.1194106], {icon: IbadahIcon}).bindPopup("Masjid As-Syuhada' <img src='img/Masjid As-Syuhada'.jpg' alt='Masjid As-Syuhada'' width='300px'/>");
+	    var ib19 = L.marker([-8.6130158,116.0983534], {icon: IbadahIcon}).bindPopup("Masjid Al-Ijtihad <img src='img/Masjid Al-Ijtihad.jpg' alt='Masjid Al-Ijtihad' width='300px'/>");
+	    var ib20 = L.marker([-8.5777076,116.1282985], {icon: IbadahIcon}).bindPopup("Masjid Qubbatul Islam Kr. Taliwang <img src='img/Masjid Qubbatul Islam Kr. Taliwang.jpg' alt='Masjid Qubbatul Islam Kr. Taliwang' width='300px'/>");
+        var Ibadah = L.layerGroup([ib1, ib2, ib3, ib4, ib5, ib6, ib7, ib8, ib9, ib10, ib11, ib12, ib13, ib14, ib15, ib16, ib17, ib18, ib19, ib20]); 
+
+        // kantor camat
+
+     
+
+        // Menambahkan kontrol layer
+        var baseLayers = {
+            "Streets": streets,
+            "Satelit": satelit
+        };
+
+        var overlays = {
+            "Batas Kecamatan": boundaries,
+            "Tempat Ibadah": Ibadah
+        };
+
+        L.control.layers(baseLayers, overlays).addTo(mymap);
+
+        // Menambahkan layer satelit secara default
+        satelit.addTo(mymap);
+    </script>
+</body>
+</html>
